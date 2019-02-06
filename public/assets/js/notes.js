@@ -6,7 +6,7 @@ var $newNoteBtn = $(".new-note");
 var $noteList = $(".list-group");
 
 // save inputs to the db and update the page
-var handleNoteSave = function () {
+var saveNote = function () {
   var newNote = {
     title: $noteTitle.val(),
     body: $noteText.val()
@@ -25,10 +25,10 @@ var handleNoteSave = function () {
 };
 
 // target the button to save the note
-$saveBtn.on("click", handleNoteSave);
+$saveBtn.on("click", saveNote);
 
 // delete the note on click
-var handleNoteDelete = function (event) {
+var deleteNote = function (event) {
   event.preventDefault();
 
   console.log("delete")
@@ -47,10 +47,10 @@ var handleNoteDelete = function (event) {
 };
 
 // target the button to delete the note
-$noteList.on("click", ".delete-note", handleNoteDelete);
+$noteList.on("click", ".delete-note", deleteNote);
 
-// render the list of notes
-var renderNoteList = function (notes) {
+// generate the list of notes
+var generateNoteList = function (notes) {
   $noteList.empty();
 
   var noteListItems = [];
@@ -76,17 +76,17 @@ var renderNoteList = function (notes) {
   $noteList.append(noteListItems);
 };
 
-// get notes from the db and render them to the sidebar
-var getAndRenderNotes = function () {
+// get notes from the db and generate them to the sidebar
+var getAndGenerateNotes = function () {
 
   // ajax get request
   $.ajax({
     url: "/api/notes",
     method: "GET"
   }).then(function (data) {
-    renderNoteList(data);
+    generateNoteList(data);
   });
 };
 
 // call the function
-getAndRenderNotes();
+getAndGenerateNotes();
