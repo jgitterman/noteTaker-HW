@@ -27,7 +27,7 @@ router.put("/:id", function (req, res) {
 });
 
 router.delete("/:id", function (req, res) {
-  connection.query("DELETE From notes WHERE id = ?", req.body.id, function (err, dbNotes) {
+  connection.query("DELETE From notes WHERE id = ?", req.params.id, function (err, dbNotes) {
     if (err) throw err
 
     res.json(dbNotes)

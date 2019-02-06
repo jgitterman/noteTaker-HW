@@ -1,46 +1,56 @@
+// create variables
 var $noteTitle = $("#noteTitle");
 var $noteText = $("#noteText");
 var $saveBtn = $("#submit-btn");
 var $newNoteBtn = $(".new-note");
 var $noteList = $(".list-group");
 
-// Get the note data from the inputs, save it to the db and update the view
-var handleNoteSave = function() {
+// save inputs to the db and update the page
+var handleNoteSave = function () {
   var newNote = {
     title: $noteTitle.val(),
-    text: $noteText.val()
+    body: $noteText.val()
   };
 
+  // ajax function to post the new note
   $.ajax({
     url: "/api/notes",
     data: newNote,
     method: "POST"
-  }).then(function(data) {
+  }).then(function (data) {
     location.reload();
+
+    console.log(data)
   });
 };
 
-// Delete the clicked note
-var handleNoteDelete = function(event) {
-  // Prevent the click listener for the list from being called when the button inside of it is clicked
-  event.stopPropagation();
+// target the button to save the note
+$saveBtn.on("click", handleNoteSave);
+
+// delete the note on click
+var handleNoteDelete = function (event) {
+  event.preventDefault();
+
+  console.log("delete")
 
   var note = $(this)
     .parents(".list-group-item")
     .data();
 
-  // Delete the note with the id of `note.id`
-  // Render the active note
+  // ajax function to delete the note
   $.ajax({
     url: "/api/notes/" + note.id,
     method: "DELETE"
-  }).then(function() {
+  }).then(function () {
     location.reload();
   });
 };
 
-// Render the list of note titles
-var renderNoteList = function(notes) {
+// target the button to delete the note
+$noteList.on("click", ".delete-note", handleNoteDelete);
+
+// render the list of notes
+var renderNoteList = function (notes) {
   $noteList.empty();
 
   var noteListItems = [];
@@ -66,18 +76,17 @@ var renderNoteList = function(notes) {
   $noteList.append(noteListItems);
 };
 
-// Get notes from the db and render them to the sidebar
-var getAndRenderNotes = function() {
+// get notes from the db and render them to the sidebar
+var getAndRenderNotes = function () {
+
+  // ajax get request
   $.ajax({
     url: "/api/notes",
     method: "GET"
-  }).then(function(data) {
+  }).then(function (data) {
     renderNoteList(data);
   });
 };
 
-$saveBtn.on("click", handleNoteSave);
-$noteList.on("click", ".delete-note", handleNoteDelete);
-
-// Gets and renders the initial list of notes
+// call the function
 getAndRenderNotes();
